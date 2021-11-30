@@ -1,0 +1,20 @@
+
+<style>
+    #archive-btn {
+            display: block;
+            background: var(--delete-button-bg);
+            border-radius: 4px;
+            padding: 10px 15px;
+            line-height: 15px;
+            color: var(--button-fg);
+    }
+</style>
+
+{% if not widget.attrs.checked %}
+    <form method="post" >
+        <input type="hidden" name="is_archived" value="0">
+        <input type="submit" value="Archive Password" id="archive-btn" onclick="return confirm('Are you sure?')">
+    </form>
+{% endif %}
+
+{% include "django/forms/widgets/checkbox.html" %}
