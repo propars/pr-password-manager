@@ -53,4 +53,4 @@ class PasswordEditForm(forms.ModelForm):
 
     class Meta:
         model = Password
-        fields = '__all__'
+        exclude = ('hash',)

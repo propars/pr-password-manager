@@ -8,7 +8,7 @@ class NonArchivedManager(models.Manager):
 
 class Password(models.Model):
     name = models.CharField(max_length=255)
-    hash = models.TextField()
+    hash = models.CharField(max_length=100)
     creation_time = models.DateTimeField(auto_now_add=True)
     expire_date = models.DateTimeField()
     is_alive = models.BooleanField(default=True)
