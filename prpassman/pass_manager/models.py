@@ -15,6 +15,7 @@ class Password(models.Model):
     is_archived = models.BooleanField(default=False)
 
     objects = NonArchivedManager()
+    all_objects = models.Manager()
 
     def __str__(self):
         return self.name

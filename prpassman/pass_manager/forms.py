@@ -26,7 +26,7 @@ class PasswordAddForm(forms.ModelForm):
         self.instance.hash = calculate_password_hash(self.cleaned_data['raw_password'])
 
         # this line checks password hash is already in the table
-        if Password.objects.filter(hash=self.instance.hash).exists():
+        if Password.all_objects.filter(hash=self.instance.hash).exists():
             raise forms.ValidationError({'raw_password': 'this password is already used'})
 
         self.instance.expire_date = timezone.now() + timezone.timedelta(days=self.cleaned_data['valid_days'])
