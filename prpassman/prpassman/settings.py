@@ -147,3 +147,18 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(hour=0, minute=30, day_of_week='*'),       # runs everyday at 0:30 AM
     },
 }
+
+
+# MAIL SETTINGS PARAMETERS
+EXPIRED_ALERT_RECEIVER_EMAILS = []
+EMAIL_FROM_ADDRESS = "<fill-this-in-production-settings>"
+EMAIL_NOREPLY_ADDRESS = "<fill-this-in-production-settings>"
+
+MAILSERVICE_SMTP_HOST = "<fill-this-in-production-settings>"
+MAILSERVICE_SMTP_PORT = "587"
+MAILSERVICE_SMTP_USER = "<fill-this-in-production-settings>"
+MAILSERVICE_SMTP_PASS = "<fill-this-in-production-settings>"
+
+# To use mailgun mail sending function for mail sending, fill these parameters:
+MG_API_KEY = ''
+MG_DOMAIN = ''
