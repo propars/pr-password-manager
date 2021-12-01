@@ -1,8 +1,15 @@
+import hashlib
 from django import forms
 from django.utils import timezone
-from django.contrib.auth.hashers import make_password
-
+from django.conf import settings
 from .models import Password
+
+
+def calculate_password_hash(raw_password):
+    raw_password = raw_password.encode() if isinstance(raw_password, str) else raw_password
+    pw_sha256 = hashlib.sha256(raw_password).hexdigest()
+    salt_md5 = hashlib.md5(settings.SECRET_KEY.encode()).hexdigest()
+    return hashlib.sha256((pw_sha256+salt_md5).encode()).hexdigest()
 
 
 class PasswordInput(forms.TextInput):
@@ -16,7 +23,7 @@ class PasswordAddForm(forms.ModelForm):
     raw_password = forms.CharField(required=True, widget=PasswordInput)
 
     def save(self, commit=True):
-        self.instance.hash = make_password(self.cleaned_data['raw_password'])
+        self.instance.hash = calculate_password_hash(self.cleaned_data['raw_password'])
 
         # this line checks password hash is already in the table
         if Password.objects.filter(hash=self.instance.hash).exists():
@@ -36,6 +43,7 @@ class PasswordAddForm(forms.ModelForm):
 class IsArchivedInput(forms.CheckboxInput):
     template_name = 'is_archived_field.html'
     label = ''
+
     def label_tag(self):
         pass
 
