@@ -43,3 +43,7 @@ class ArchivedPasswordAdmin(PasswordAdmin):
 admin.site.register(Password, PasswordAdmin)
 admin.site.register(ArchivedPassword, ArchivedPasswordAdmin)
 
+admin.site.site_header = "Propars Password Manager"
+admin.site.site_title = "Propars Password Manager"
+admin.site.index_title = ""
+
