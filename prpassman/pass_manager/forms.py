@@ -1,4 +1,5 @@
 import hashlib
+import string
 from django import forms
 from django.utils import timezone
 from django.conf import settings
@@ -17,10 +18,48 @@ class PasswordInput(forms.TextInput):
 
 
 class PasswordAddForm(forms.ModelForm):
-    valid_days = forms.IntegerField(required=True, initial=90)
+    valid_days = forms.IntegerField(required=True, initial=120)
     password_length = forms.IntegerField(required=False, initial=30)
     contains_punctuation = forms.BooleanField(required=False)
     raw_password = forms.CharField(required=True, widget=PasswordInput)
+
+    def clean_raw_password(self):
+        min_length = 12
+        raw_password = self.cleaned_data['raw_password']
+        _errors = []
+
+        # minimum length check
+        if len(raw_password) < min_length:
+            _errors.append('Password must be at least 12 characters')
+
+        # check for numeric characters
+        if not any(c.isdigit() for c in raw_password):
+            _errors.append('Password must contain at least 1 digit.')
+
+        # lowercase check
+        if not any(c.isalpha() and c.islower() for c in raw_password):
+            _errors.append('Password must contain at least 1 lowercase letter.')
+
+        # uppercase check
+        if not any(c.isalpha() and c.isupper() for c in raw_password):
+            _errors.append('Password must contain at least 1 uppercase letter.')
+
+        # special character check
+        if not any(c in string.punctuation for c in raw_password):
+            _errors.append('Password must contain at least 1 special character.')
+
+        if _errors:
+            raise forms.ValidationError(_errors)
+
+        return raw_password
+
+    def clean_valid_days(self):
+        valid_days = self.cleaned_data['valid_days']
+        # minimum valid days: 90
+        # maximum valid days: 180
+        if valid_days < 90 or valid_days > 180:
+            raise forms.ValidationError('Valid days must be between 90 and 180.')
+        return valid_days
 
     def save(self, commit=True):
         self.instance.hash = calculate_password_hash(self.cleaned_data['raw_password'])
